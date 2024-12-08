@@ -2,27 +2,33 @@ pipeline {
     agent any 
 
     stages {
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    // Build your Docker image
+                    // Build the Docker image
                     bat 'docker build -t my-nodejs-app .'
                 }
             }
         }
-        stage('Test') {
+        stage('Run Tests') {
             steps {
                 script {
-                    // Run tests here if you have any
+                    // Example test command (replace with actual test logic)
                     echo 'Running tests...'
+                    bat 'npm install && npm test' // Run tests for the Node.js application
                 }
             }
         }
-        stage('Deploy') {
+        stage('Deploy Application') {
             steps {
                 script {
-                    // Deploy your Docker image
+                    // Deploy the Docker container
                     echo 'Deploying application...'
+                    bat '''
+                        docker stop my-nodejs-app || true
+                        docker rm my-nodejs-app || true
+                        docker run -d -p 3000:3000 --name my-nodejs-app my-nodejs-app
+                    '''
                 }
             }
         }
